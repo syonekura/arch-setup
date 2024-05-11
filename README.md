@@ -1,8 +1,7 @@
-![](https://img.shields.io/github/license/classy-giraffe/easy-arch?label=License)
-![](https://img.shields.io/github/stars/classy-giraffe/easy-arch?label=Stars)
-![](https://img.shields.io/github/forks/classy-giraffe/easy-arch?label=Forks)
 
-[easy-arch](https://github.com/classy-giraffe/easy-arch) is a **bash script** that boostraps [Arch Linux](https://archlinux.org/) with sane opinionated defaults.
+# Arch Setup
+
+Forked from [easy-arch](https://github.com/classy-giraffe/easy-arch), this is a **bash script** that boostraps [Arch Linux](https://archlinux.org/) with sane opinionated defaults.
 
 - **BTRFS snapshots**: you will have a resilient setup that automatically takes snapshots of your volumes based on a weekly schedule
 - **LUKS2 encryption**: your data will live on a LUKS2 partition protected by a password
@@ -10,19 +9,7 @@
 - **systemd-oomd**: systemd-oomd will take care of OOM situations at userspace level rather than at kernel level, making the system less prone to kernel crashes 
 - **VM additions**: the script automatically provides guest tools if it detects that a virtualized environment such as VMWare Workstation, VirtualBox, QEMU-KVM is being used
 - **User account setup**: a default user account with sudo permissions can be configured in order to avoid hassle in the post installation phase
-- **CI checks**: ShellChecker checks every PR periodically for bash syntax errors, bad coding practices, etc... 
-
-## One-step Automated Install (shorter)
-
-### `bash <(curl -sL bit.ly/easy-arch)`
-
-## Alternative Methods (manual)
-
-```bash 
-wget -O easy-arch.sh https://raw.githubusercontent.com/classy-giraffe/easy-arch/main/easy-arch.sh
-chmod +x easy-arch.sh
-bash easy-arch.sh
-```
+- **CI checks**: ShellChecker checks every PR periodically for bash syntax errors, bad coding practices, etc...
 
 ## Partitions layout 
 
