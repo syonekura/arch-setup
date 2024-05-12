@@ -62,8 +62,9 @@ kernel_selector () {
     info_print "2) Hardened: A security-focused Linux kernel"
     info_print "3) Longterm: Long-term support (LTS) Linux kernel"
     info_print "4) Zen Kernel: A Linux kernel optimized for desktop usage"
-    input_print "Please select the number of the corresponding kernel (e.g. 1): " 
-    read -r kernel_choice
+#    input_print "Please select the number of the corresponding kernel (e.g. 1): "
+    kernel_choice=1
+#    read -r kernel_choice
     case $kernel_choice in
         1 ) kernel="linux"
             return 0;;
@@ -86,8 +87,9 @@ network_selector () {
     info_print "3) wpa_supplicant: Utility with support for WEP and WPA/WPA2 (WiFi-only, DHCPCD will be automatically installed)"
     info_print "4) dhcpcd: Basic DHCP client (Ethernet connections or VMs)"
     info_print "5) I will do this on my own (only advanced users)"
-    input_print "Please select the number of the corresponding networking utility (e.g. 1): "
-    read -r network_choice
+#    input_print "Please select the number of the corresponding networking utility (e.g. 1): "
+    network_choice=2
+#    read -r network_choice
     if ! ((1 <= network_choice <= 5)); then
         error_print "You did not enter a valid selection, please try again."
         return 1
@@ -119,21 +121,24 @@ network_installer () {
 
 # Setting up a password for the user account (function).
 userpass_selector () {
-    input_print "Please enter name for a user account (enter empty to not create one): "
-    read -r username
+#    input_print "Please enter name for a user account (enter empty to not create one): "
+    username="username"
+#    read -r username
     if [[ -z "$username" ]]; then
         return 0
     fi
-    input_print "Please enter a password for $username (you're not going to see the password): "
-    read -r -s userpass
+#    input_print "Please enter a password for $username (you're not going to see the password): "
+    userpass="devpass"
+#    read -r -s userpass
     if [[ -z "$userpass" ]]; then
         echo
         error_print "You need to enter a password for $username, please try again."
         return 1
     fi
     echo
-    input_print "Please enter the password again (you're not going to see it): " 
-    read -r -s userpass2
+#    input_print "Please enter the password again (you're not going to see it): "
+    userpass2="devpass"
+#    read -r -s userpass2
     echo
     if [[ "$userpass" != "$userpass2" ]]; then
         echo
@@ -145,16 +150,18 @@ userpass_selector () {
 
 # Setting up a password for the root account (function).
 rootpass_selector () {
-    input_print "Please enter a password for the root user (you're not going to see it): "
-    read -r -s rootpass
+#    input_print "Please enter a password for the root user (you're not going to see it): "
+    rootpass="devpass"
+#    read -r -s rootpass
     if [[ -z "$rootpass" ]]; then
         echo
         error_print "You need to enter a password for the root user, please try again."
         return 1
     fi
     echo
-    input_print "Please enter the password again (you're not going to see it): " 
-    read -r -s rootpass2
+#    input_print "Please enter the password again (you're not going to see it): "
+    rootpass2="devpass"
+#    read -r -s rootpass2
     echo
     if [[ "$rootpass" != "$rootpass2" ]]; then
         error_print "Passwords don't match, please try again."
@@ -177,8 +184,9 @@ microcode_detector () {
 
 # User enters a hostname (function).
 hostname_selector () {
-    input_print "Please enter the hostname: "
-    read -r hostname
+#    input_print "Please enter the hostname: "
+    hostname="DevHost"
+#    read -r hostname
     if [[ -z "$hostname" ]]; then
         error_print "You need to enter a hostname in order to continue."
         return 1
@@ -188,8 +196,9 @@ hostname_selector () {
 
 # User chooses the locale (function).
 locale_selector () {
-    input_print "Please insert the locale you use (format: xx_XX. Enter empty to use en_US, or \"/\" to search locales): " locale
-    read -r locale
+#    input_print "Please insert the locale you use (format: xx_XX. Enter empty to use en_US, or \"/\" to search locales): " locale
+    locale="en_US.UTF-8"
+#    read -r locale
     case "$locale" in
         '') locale="en_US.UTF-8"
             info_print "$locale will be the default locale."
@@ -207,8 +216,9 @@ locale_selector () {
 
 # User chooses the console keyboard layout (function).
 keyboard_selector () {
-    input_print "Please insert the keyboard layout to use in console (enter empty to use US, or \"/\" to look up for keyboard layouts): "
-    read -r kblayout
+#    input_print "Please insert the keyboard layout to use in console (enter empty to use US, or \"/\" to look up for keyboard layouts): "
+    kblayout="us"
+#    read -r kblayout
     case "$kblayout" in
         '') kblayout="us"
             info_print "The standard US keyboard layout will be used."
@@ -252,26 +262,37 @@ install_apps () {
       fish \
       starship \
       ttf-firacode-nerd \
+      bat \
       &>/dev/null
 
-    arch-chroot /mnt /bin/bash -e <<EOF
-      # Enable multilib
-
-      # Manual install paru
-
-      # Apps from AUR
-
-      # Gnome settings
-      gsettings set org.gnome.shell favorite-apps "['firefox.desktop', 'kitty.desktop', 'obsidian.desktop', 'org.gnome.Nautilus.desktop']"
-      # TODO Remember to collapse this before each commit
-      gsettings set org.gnome.shell app-picker-layout "[
-        {'org.darktable.darktable.desktop': <{'position': <0>}>},
-        {'org.keepassxc.KeePassXC.desktop': <{'position': <1>}>},
-        {'org.gnome.Settings.desktop': <{'position': <2>}>}
-      ]"
-
-      # Get dotfiles
-EOF
+#    arch-chroot /mnt /bin/bash -e <<EOF
+#      # Enable multilib
+#      sed -Ezi 's/#(\[multilib\]\n)#(Include = .*mirrorlist\n)/\1\2/g' /etc/pacman.conf
+#      pacman -Syu
+#
+#      pacman -S steam
+#
+#      # Manual install paru
+#      pacman -S --needed base-devel
+#      git clone https://aur.archlinux.org/paru.git
+#      cd paru
+#      makepkg -si
+#
+#      paru --gendb
+#
+#      # Apps from AUR
+#
+#      # Gnome settings
+#      gsettings set org.gnome.shell favorite-apps "['firefox.desktop', 'kitty.desktop', 'obsidian.desktop', 'org.gnome.Nautilus.desktop']"
+#      # TODO Remember to collapse this before each commit
+#      gsettings set org.gnome.shell app-picker-layout "[
+#        {'org.darktable.darktable.desktop': <{'position': <0>}>},
+#        {'org.keepassxc.KeePassXC.desktop': <{'position': <1>}>},
+#        {'org.gnome.Settings.desktop': <{'position': <2>}>}
+#      ]"
+#
+#      # Get dotfiles
+#EOF
 }
 
 # Welcome screen.
@@ -292,13 +313,14 @@ until keyboard_selector; do : ; done
 
 # Choosing the target for the installation.
 info_print "Available disks for the installation:"
-PS3="Please select the number of the corresponding disk (e.g. 1): "
-select ENTRY in $(lsblk -dpnoNAME|grep -P "/dev/sd|nvme|vd");
-do
-    DISK="$ENTRY"
-    info_print "Arch Linux will be installed on the following disk: $DISK"
-    break
-done
+#PS3="Please select the number of the corresponding disk (e.g. 1): "
+#select ENTRY in $(lsblk -dpnoNAME|grep -P "/dev/sd|nvme|vd");
+#do
+#    DISK="$ENTRY"
+#    info_print "Arch Linux will be installed on the following disk: $DISK"
+#    break
+#done
+DISK="dev/sda"
 
 # Setting up the kernel.
 until kernel_selector; do : ; done
@@ -317,12 +339,12 @@ until userpass_selector; do : ; done
 until rootpass_selector; do : ; done
 
 # Warn user about deletion of old partition scheme.
-input_print "This will delete the current partition table on $DISK once installation starts. Do you agree [y/N]?: "
-read -r disk_response
-if ! [[ "${disk_response,,}" =~ ^(yes|y)$ ]]; then
-    error_print "Quitting."
-    exit
-fi
+#input_print "This will delete the current partition table on $DISK once installation starts. Do you agree [y/N]?: "
+#read -r disk_response
+#if ! [[ "${disk_response,,}" =~ ^(yes|y)$ ]]; then
+#    error_print "Quitting."
+#    exit
+#fi
 info_print "Wiping $DISK."
 wipefs -af "$DISK" &>/dev/null
 sgdisk -Zo "$DISK" &>/dev/null
