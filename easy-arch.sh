@@ -320,7 +320,7 @@ info_print "Available disks for the installation:"
 #    info_print "Arch Linux will be installed on the following disk: $DISK"
 #    break
 #done
-DISK="dev/sda"
+DISK="/dev/sda"
 
 # Setting up the kernel.
 until kernel_selector; do : ; done
