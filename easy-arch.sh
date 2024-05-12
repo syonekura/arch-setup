@@ -226,6 +226,35 @@ keyboard_selector () {
     esac
 }
 
+gnome_installer () {
+    info_print "Installing GNOME"
+    pacstrap /mnt \
+      gdm \
+      gnome-shell \
+      gnome-control-center \
+      gnome-backgrounds \
+      nautilus \
+      gnome-font-viewer \
+      &>/dev/null
+    systemctl enable gdm --root=/mnt &>/dev/null
+}
+
+install_apps () {
+    info_print "Installing Apps"
+    pacstrap /mnt \
+      nano \
+      darktable \
+      firefox \
+      keepass \
+      qemu-full \
+      obsidian \
+      kitty \
+      fish \
+      starship \
+      ttf-firacode-nerd \
+      &>/dev/null
+}
+
 # Welcome screen.
 echo -ne "${BOLD}${BYELLOW}
 ======================================================================
@@ -443,6 +472,9 @@ services=(reflector.timer snapper-timeline.timer snapper-cleanup.timer btrfs-scr
 for service in "${services[@]}"; do
     systemctl enable "$service" --root=/mnt &>/dev/null
 done
+
+gnome_installer
+install_apps
 
 # Finishing up.
 info_print "Done, you may now wish to reboot (further changes can be done by chrooting into /mnt)."
