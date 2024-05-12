@@ -245,7 +245,7 @@ install_apps () {
       nano \
       darktable \
       firefox \
-      keepass \
+      keepassxc \
       qemu-full \
       obsidian \
       kitty \
@@ -253,6 +253,25 @@ install_apps () {
       starship \
       ttf-firacode-nerd \
       &>/dev/null
+
+    arch-chroot /mnt /bin/bash -e <<EOF
+      # Enable multilib
+
+      # Manual install paru
+
+      # Apps from AUR
+
+      # Gnome settings
+      gsettings set org.gnome.shell favorite-apps "['firefox.desktop', 'kitty.desktop', 'obsidian.desktop', 'org.gnome.Nautilus.desktop']"
+      # TODO Remember to collapse this before each commit
+      gsettings set org.gnome.shell app-picker-layout "[
+        {'org.darktable.darktable.desktop': <{'position': <0>}>},
+        {'org.keepassxc.KeePassXC.desktop': <{'position': <1>}>},
+        {'org.gnome.Settings.desktop': <{'position': <2>}>}
+      ]"
+
+      # Get dotfiles
+EOF
 }
 
 # Welcome screen.
