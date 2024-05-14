@@ -279,7 +279,7 @@ install_apps () {
     arch-chroot /mnt su - $username -c "paru --gendb &>/dev/null"
 
     info_print "Installing apps from AUR"
-    arch-chroot /mnt su - $username -c "paru -S jetbrains-toolbox insync ferdium-bin"
+    arch-chroot /mnt su - $username -c "echo $userpass | paru -S jetbrains-toolbox insync ferdium-bin --skipreview --noconfirm --sudoflags -S"
 
     arch-chroot /mnt /bin/bash -e <<EOF
       # Gnome settings
