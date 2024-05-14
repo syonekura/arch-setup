@@ -271,14 +271,14 @@ install_apps () {
     arch-chroot /mnt pacman -Syu --noconfirm
     arch-chroot /mnt pacman -S steam
 
-    info-print "Installing paru"
+    info_print "Installing paru"
     arch-chroot /mnt pacman -S --needed base-devel git --noconfirm &>/dev/null
     arch-chroot /mnt su - $username -c "rustup default stable" &>/dev/null
     arch-chroot /mnt sed -Ei 's/OPTIONS=\((.*)\s(debug)\s(.*)\)/OPTIONS=(\1 !debug \3)/' /etc/makepkg.conf
     arch-chroot /mnt su - $username -c "git clone https://aur.archlinux.org/paru.git &>/dev/null && cd /home/$username/paru && makepkg && echo '$userpass' | sudo -S pacman -U paru-*.pkg.tar.zst --noconfirm && cd /home/$username && rm -rf /home/$username/paru"
     arch-chroot /mnt su - $username -c "paru --gendb &>/dev/null"
 
-    info print "Installing apps from AUR"
+    info_print "Installing apps from AUR"
     arch-chroot /mnt su - $username -c "paru -S jetbrains-toolbox insync ferdium-bin"
 
     arch-chroot /mnt /bin/bash -e <<EOF
