@@ -263,36 +263,37 @@ install_apps () {
       starship \
       ttf-firacode-nerd \
       bat \
+      rustup \
       &>/dev/null
 
-#    arch-chroot /mnt /bin/bash -e <<EOF
-#      # Enable multilib
-#      sed -Ezi 's/#(\[multilib\]\n)#(Include = .*mirrorlist\n)/\1\2/g' /etc/pacman.conf
-#      pacman -Syu
-#
-#      pacman -S steam
-#
-#      # Manual install paru
-#      pacman -S --needed base-devel
-#      git clone https://aur.archlinux.org/paru.git
-#      cd paru
-#      makepkg -si
-#
-#      paru --gendb
-#
-#      # Apps from AUR
-#
-#      # Gnome settings
-#      gsettings set org.gnome.shell favorite-apps "['firefox.desktop', 'kitty.desktop', 'obsidian.desktop', 'org.gnome.Nautilus.desktop']"
-#      # TODO Remember to collapse this before each commit
+    info_print "Enabling multilib and installing Steam"
+    arch-chroot /mnt sed -Ezi 's/#(\[multilib\]\n)#(Include = .*mirrorlist\n)/\1\2/g' /etc/pacman.conf
+    arch-chroot /mnt pacman -Syu --noconfirm
+    arch-chroot /mnt pacman -S steam
+
+    info-print "Installing paru"
+    arch-chroot /mnt pacman -S --needed base-devel git --noconfirm &>/dev/null
+    arch-chroot /mnt su - $username -c "rustup default stable" &>/dev/null
+    arch-chroot /mnt sed -Ei 's/OPTIONS=\((.*)\s(debug)\s(.*)\)/OPTIONS=(\1 !debug \3)/' /etc/makepkg.conf
+    arch-chroot /mnt su - $username -c "git clone https://aur.archlinux.org/paru.git &>/dev/null && cd /home/$username/paru && makepkg && echo '$userpass' | sudo -S pacman -U paru-*.pkg.tar.zst --noconfirm && cd /home/$username && rm -rf /home/$username/paru"
+    arch-chroot /mnt su - $username -c "paru --gendb &>/dev/null"
+
+    info print "Installing apps from AUR"
+    arch-chroot /mnt su - $username -c "paru -S jetbrains-toolbox insync ferdium-bin"
+
+    arch-chroot /mnt /bin/bash -e <<EOF
+      # Gnome settings
+      gsettings set org.gnome.shell favorite-apps "['firefox.desktop', 'kitty.desktop', 'obsidian.desktop', 'org.gnome.Nautilus.desktop']"
+      # Remember to collapse this before each commit
 #      gsettings set org.gnome.shell app-picker-layout "[
 #        {'org.darktable.darktable.desktop': <{'position': <0>}>},
 #        {'org.keepassxc.KeePassXC.desktop': <{'position': <1>}>},
-#        {'org.gnome.Settings.desktop': <{'position': <2>}>}
-#      ]"
+#        {'org.gnome.Settings.desktop': <{'position': <2>}>},
 #
-#      # Get dotfiles
-#EOF
+#      ]"
+
+      # Get dotfiles
+EOF
 }
 
 # Welcome screen.
