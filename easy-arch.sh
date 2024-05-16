@@ -279,31 +279,23 @@ install_apps () {
     arch-chroot /mnt su - $username -c "git clone https://aur.archlinux.org/paru.git && cd /home/$username/paru && makepkg && echo '$userpass' | sudo -S pacman -U paru-*.pkg.tar.zst --noconfirm && cd /home/$username && rm -rf /home/$username/paru" &>/dev/null
     arch-chroot /mnt su - $username -c "paru --gendb" &>/dev/null
 
-    info_print "Installing apps from AUR"
-    arch-chroot /mnt
-    su - $username
-    # Will ask for sudo
-    paru -S jetbrains-toolbox insync ferdium-bin
-
     info_print "Installing Mise"
-    curl https://mise.run | sh
+    arch-chroot /mnt su - $username -c "curl https://mise.run | sh" &>/dev/null
 
-    exit
-    exit
-
-    arch-chroot /mnt /bin/bash -e <<EOF
-      # Gnome settings
-      gsettings set org.gnome.shell favorite-apps "['firefox.desktop', 'kitty.desktop', 'obsidian.desktop', 'org.gnome.Nautilus.desktop']"
-      # Remember to collapse this before each commit
+# TODO move to yadm
+#    arch-chroot /mnt /bin/bash -e <<EOF
+#      # Gnome settings
+#      gsettings set org.gnome.shell favorite-apps "['firefox.desktop', 'kitty.desktop', 'obsidian.desktop', 'org.gnome.Nautilus.desktop']"
+#      # Remember to collapse this before each commit
 #      gsettings set org.gnome.shell app-picker-layout "[
 #        {'org.darktable.darktable.desktop': <{'position': <0>}>},
 #        {'org.keepassxc.KeePassXC.desktop': <{'position': <1>}>},
 #        {'org.gnome.Settings.desktop': <{'position': <2>}>},
 #
 #      ]"
-
-      # Get dotfiles
-EOF
+#
+#      # Get dotfiles
+#EOF
 }
 
 # Welcome screen.
