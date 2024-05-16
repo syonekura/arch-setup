@@ -264,6 +264,7 @@ install_apps () {
       ttf-firacode-nerd \
       bat \
       rustup \
+      devtools \
       &>/dev/null
 
     info_print "Enabling multilib and installing Steam"
@@ -275,11 +276,20 @@ install_apps () {
     arch-chroot /mnt pacman -S --needed base-devel git --noconfirm &>/dev/null
     arch-chroot /mnt su - $username -c "rustup default stable" &>/dev/null
     arch-chroot /mnt sed -Ei 's/OPTIONS=\((.*)\s(debug)\s(.*)\)/OPTIONS=(\1 !debug \3)/' /etc/makepkg.conf
-    arch-chroot /mnt su - $username -c "git clone https://aur.archlinux.org/paru.git &>/dev/null && cd /home/$username/paru && makepkg && echo '$userpass' | sudo -S pacman -U paru-*.pkg.tar.zst --noconfirm && cd /home/$username && rm -rf /home/$username/paru"
-    arch-chroot /mnt su - $username -c "paru --gendb &>/dev/null"
+    arch-chroot /mnt su - $username -c "git clone https://aur.archlinux.org/paru.git && cd /home/$username/paru && makepkg && echo '$userpass' | sudo -S pacman -U paru-*.pkg.tar.zst --noconfirm && cd /home/$username && rm -rf /home/$username/paru" &>/dev/null
+    arch-chroot /mnt su - $username -c "paru --gendb" &>/dev/null
 
     info_print "Installing apps from AUR"
-    arch-chroot /mnt su - $username -c "echo $userpass | paru -S jetbrains-toolbox insync ferdium-bin --skipreview --noconfirm --sudoflags -S"
+    arch-chroot /mnt
+    su - $username
+    # Will ask for sudo
+    paru -S jetbrains-toolbox insync ferdium-bin
+
+    info_print "Installing Mise"
+    curl https://mise.run | sh
+
+    exit
+    exit
 
     arch-chroot /mnt /bin/bash -e <<EOF
       # Gnome settings
