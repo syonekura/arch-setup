@@ -14,6 +14,13 @@ BGREEN='\e[92m'
 BYELLOW='\e[93m'
 RESET='\e[0m'
 
+run-silent () {
+  TEMP=$(mktemp)
+  ${1+"$@"} > "$TEMP" 2>&1 || (printf "Failed! See logs at %s" "$TEMP" && cat "$TEMP" && exit 1)
+  /bin/rm "$TEMP";
+}
+
+
 # Pretty print (function).
 info_print () {
     echo -e "${BOLD}${BGREEN}[ ${BYELLOW}•${BGREEN} ] $1${RESET}"
@@ -238,20 +245,19 @@ keyboard_selector () {
 
 gnome_installer () {
     info_print "Installing GNOME"
-    pacstrap /mnt \
+    run-silent pacstrap /mnt \
       gdm \
       gnome-shell \
       gnome-control-center \
       gnome-backgrounds \
       nautilus \
-      gnome-font-viewer \
-      &>/dev/null
-    systemctl enable gdm --root=/mnt &>/dev/null
+      gnome-font-viewer
+    run-silent systemctl enable gdm --root=/mnt
 }
 
 install_apps () {
     info_print "Installing Apps"
-    pacstrap /mnt \
+    run-silent pacstrap /mnt \
       nano \
       darktable \
       firefox \
@@ -264,8 +270,7 @@ install_apps () {
       ttf-firacode-nerd \
       bat \
       rustup \
-      devtools \
-      &>/dev/null
+      devtools
 
     info_print "Enabling multilib and installing Steam"
     arch-chroot /mnt sed -Ezi 's/#(\[multilib\]\n)#(Include = .*mirrorlist\n)/\1\2/g' /etc/pacman.conf
@@ -273,14 +278,18 @@ install_apps () {
     arch-chroot /mnt pacman -S steam
 
     info_print "Installing paru"
-    arch-chroot /mnt pacman -S --needed base-devel git --noconfirm &>/dev/null
-    arch-chroot /mnt su - $username -c "rustup default stable" &>/dev/null
+    run-silent arch-chroot /mnt pacman -S --needed base-devel git --noconfirm
+    run-silent arch-chroot /mnt su - $username -c "rustup default stable"
     arch-chroot /mnt sed -Ei 's/OPTIONS=\((.*)\s(debug)\s(.*)\)/OPTIONS=(\1 !debug \3)/' /etc/makepkg.conf
-    arch-chroot /mnt su - $username -c "git clone https://aur.archlinux.org/paru.git && cd /home/$username/paru && makepkg && echo '$userpass' | sudo -S pacman -U paru-*.pkg.tar.zst --noconfirm && cd /home/$username && rm -rf /home/$username/paru" &>/dev/null
-    arch-chroot /mnt su - $username -c "paru --gendb" &>/dev/null
+    run-silent arch-chroot /mnt su - $username -c "git clone https://aur.archlinux.org/paru.git && cd /home/$username/paru && makepkg && echo '$userpass' | sudo -S pacman -U paru-*.pkg.tar.zst --noconfirm && cd /home/$username && rm -rf /home/$username/paru"
+    run-silent arch-chroot /mnt su - $username -c "paru --gendb"
 
     info_print "Installing Mise"
-    arch-chroot /mnt su - $username -c "curl https://mise.run | sh" &>/dev/null
+    run-silent arch-chroot /mnt su - $username -c "curl https://mise.run | sh"
+    echo 'eval "$(~/.local/bin/mise activate bash)"' >> /mnt/home/$username/.bashrc
+
+    info_print "Copying one time setup script"
+    cp one-time-setup.sh /mnt/home/$username/
 
 # TODO move to yadm
 #    arch-chroot /mnt /bin/bash -e <<EOF
