@@ -254,7 +254,10 @@ gnome_installer () {
       gnome-font-viewer \
       gtk3 \
       gnome-themes-extra \
-      gnome-tweaks
+      gnome-tweaks \
+      loupe \
+      gnome-calendar \
+      gnome-weather
     run-silent systemctl enable gdm --root=/mnt
 }
 
@@ -274,12 +277,11 @@ install_apps () {
       bat \
       rustup \
       devtools \
-      neofetch
+      neofetch \
+      man
 
-    info_print "Enabling multilib and installing Steam"
+    info_print "Enabling multilib"
     arch-chroot /mnt sed -Ezi 's/#(\[multilib\]\n)#(Include = .*mirrorlist\n)/\1\2/g' /etc/pacman.conf
-    arch-chroot /mnt pacman -Syu --noconfirm
-    arch-chroot /mnt pacman -S steam
 
     info_print "Installing paru"
     run-silent arch-chroot /mnt pacman -S --needed base-devel git --noconfirm
