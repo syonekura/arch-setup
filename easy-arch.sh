@@ -251,7 +251,10 @@ gnome_installer () {
       gnome-control-center \
       gnome-backgrounds \
       nautilus \
-      gnome-font-viewer
+      gnome-font-viewer \
+      gtk3 \
+      gnome-themes-extra \
+      gnome-tweaks
     run-silent systemctl enable gdm --root=/mnt
 }
 
@@ -270,7 +273,8 @@ install_apps () {
       ttf-firacode-nerd \
       bat \
       rustup \
-      devtools
+      devtools \
+      neofetch
 
     info_print "Enabling multilib and installing Steam"
     arch-chroot /mnt sed -Ezi 's/#(\[multilib\]\n)#(Include = .*mirrorlist\n)/\1\2/g' /etc/pacman.conf
@@ -290,21 +294,6 @@ install_apps () {
 
     info_print "Copying one time setup script"
     cp one-time-setup.sh /mnt/home/$username/
-
-# TODO move to yadm
-#    arch-chroot /mnt /bin/bash -e <<EOF
-#      # Gnome settings
-#      gsettings set org.gnome.shell favorite-apps "['firefox.desktop', 'kitty.desktop', 'obsidian.desktop', 'org.gnome.Nautilus.desktop']"
-#      # Remember to collapse this before each commit
-#      gsettings set org.gnome.shell app-picker-layout "[
-#        {'org.darktable.darktable.desktop': <{'position': <0>}>},
-#        {'org.keepassxc.KeePassXC.desktop': <{'position': <1>}>},
-#        {'org.gnome.Settings.desktop': <{'position': <2>}>},
-#
-#      ]"
-#
-#      # Get dotfiles
-#EOF
 }
 
 # Welcome screen.
