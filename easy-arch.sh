@@ -282,6 +282,7 @@ install_apps () {
 
     info_print "Enabling multilib"
     arch-chroot /mnt sed -Ezi 's/#(\[multilib\]\n)#(Include = .*mirrorlist\n)/\1\2/g' /etc/pacman.conf
+    arch-chroot /mnt pacman -Syu --noconfirm
 
     info_print "Installing paru"
     run-silent arch-chroot /mnt pacman -S --needed base-devel git --noconfirm
